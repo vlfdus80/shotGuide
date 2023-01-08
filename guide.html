@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <title>Genotropin Guide</title>
+  </head>
+  <body>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col" style="background-color:white;border:rgb(248,249,250) solid 5px;padding:1rem;margin:1rem"; >
+          <h3 class="display-6">기준 정보</h3>
+          <p>처방 및 간호사 가이드시 해당 기준용량을 참조</p>
+          <hr class="my-4">
+          <p><h2> 36 <var>IU<var> = 12 <var>mg<var></h2></p>
+          <p><h4> 3 <var>IU<var> = 1 <var>mg<var></h4></p>
+
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col" style="background-color:white;border:rgb(248,249,250) solid 5px;padding:1rem;margin:1rem"; >
+          <h3 class="display-6">처방전</h3>
+          <hr class="my-4">
+          <p>
+            <label> 환자이름 :  </label>
+            <input style="width:100px" type="text" id="pacient">
+          </p>
+
+          <p>
+            <label> 펜 Type :  </label>
+            <select style="width:190px" id="pentype">
+                <option value=0.2>Genotropin 12<var>mg</var></option>
+                <option value=0.1>Genotropin 5.3<var>mg</var></option>
+                <option value=0.05>Genotropin 고퀵 5.3<var>mg</var></option>
+            </select>
+          </p>
+          <p>
+            Unit : <input style="width:80px" type="number" id="penunit" disabled> <var>mg<var>
+          </p>
+          <p>
+            <label> 주당 처방 횟수 :  </label>
+            <select style="width:80px" id="weeklycount">
+                <option value=1>1회</option>
+                <option value=2>2회</option>
+                <option value=3>3회</option>
+                <option value=4>4회</option>
+                <option value=5>5회</option>
+                <option value=6>6회</option>
+                <option value=7>7회</option>
+            </select>
+          </p>
+          <p>
+            <label> 1회당 처방 용량 :  </label>
+            <input style="width:80px" type="number" id="dose"> <var>IU<var>
+            <input style="width:80px" type="number" id="dose_mg" disabled> <var>mg<var>
+          </p>
+
+          <p>
+            <label> 주간 처방 총 용량 :  </label>
+            <input style="width:80px" type="number" id="weekdose" disabled> <var>IU<var>
+            <input style="width:80px" type="number" id="weekdose_mg" disabled> <var>mg<var>
+          </p>
+
+          <p>
+            <label> Up-Down 기준 :  </label>
+            <select style="width:80px" id="updown">
+                <option value=1>Up</option>
+                <option value=0>Down</option>
+            </select>
+          </p>
+
+
+          <a class="btn btn-info btn-lg" href="#" role="button" id="compute">용량 계산</a>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col" style="background-color:white;border:rgb(248,249,250) solid 5px;padding:1rem;margin:1rem"; id="guidediv" >
+          <h3 class="display-6">간호 용량 가이드</h3>
+          <hr class="my-4">
+            <p><button type="button" class="btn btn-info" id="shot">screen shot</button>
+            </p>
+            <p class="lead" id="guide1">
+            </p>
+           <p style="background-color:gray" id="guide2">
+            </p>
+            <p >
+              <input type="hidden" id="hid">
+            </p>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $("#penunit").val($("#pentype").val());
+      })
+
+      $("#pentype").change(function(){
+        $("#penunit").val($("#pentype").val());
+      })
+
+      $("#weeklycount").change(function(){
+
+        var dosemgrate = 3;
+        var weeklycount = $("#weeklycount").val();
+        var dose = $("#dose").val();
+        var weekdose = weeklycount * dose;
+        var weekdose_mg = weekdose / dosemgrate;
+        var dose_mg = weekdose_mg / weeklycount;
+        $("#weekdose").val(weekdose.toFixed(1));
+        $("#dose_mg").val(dose_mg.toFixed(3));
+        $("#weekdose_mg").val(weekdose_mg.toFixed(3));
+      })
+      $("#dose").change(function(){
+        var dosemgrate = 3;
+        var weeklycount = $("#weeklycount").val();
+        var dose = $("#dose").val();
+        var weekdose = weeklycount * dose;
+        var weekdose_mg = weekdose / dosemgrate;
+        var dose_mg = weekdose_mg / weeklycount;
+        $("#weekdose").val(weekdose.toFixed(1));
+        $("#dose_mg").val(dose_mg.toFixed(3));
+        $("#weekdose_mg").val(weekdose_mg.toFixed(3));
+      })
+
+
+      $("#compute").click(function(){
+        var weeklycount = $("#weeklycount").val();
+        var dose = $("#dose").val();
+        var weekdose = $("#weekdose").val();
+        var updown = $("#updown").val();
+        var dosemgrate = 3;
+        var penunit = $("#pentype").val();
+
+        var weekdose_mg = weekdose / dosemgrate; //weekdose_mg는 주간 총 투여해야할 mg단위의 값 (modify 되지 않은 이론상의 소수점단위)
+        var weekdose_mg_mod = 0; // weekdose_mg_mod는 주간 총 투여해야할 mg단위의 값(updown기준에 의해 결정된 실제 투여할 양)
+        var dose_mg = weekdose_mg / weeklycount; //dose_mg는 1회당 투여해야할 mg단위의 값 (modify 되지 않은 이론상의 소수점단위)
+        var dose_mg_unit_raw = (dose_mg / penunit).toFixed(5); //dose_mg_unit_raw 은 dose_mg를 penunit(0.2)단위로 나눈 값 (modify 되지 않은 이론상의 소수점단위)
+        var dose_mg_unit_max = Math.ceil(dose_mg_unit_raw); //
+        var dose_mg_unit_min = Math.floor(dose_mg_unit_raw); //
+        var dose_mg_max = dose_mg_unit_max * penunit; //dose_mg_max는 1회당 투여해야할 mg단위의 최대값 (실제 투여할 최대치)
+        var dose_mg_min = dose_mg_unit_min * penunit; //dose_mg_min는 1회당 투여해야할 mg단위의 최소값 (실제 투여할 최소치)
+        var dose_max_count = 0; //주간에 dose_mg_max를 투여할 횟수
+        var dose_min_count = 0; //주간에 dose_mg_min를 투여할 횟수
+        var weekdose_unit = 0; //weekdose_unit 은 updown기준에 의해 실제 처방해야할 주간 전체 unit수
+        var weekdose_unit_raw = (weekdose_mg / penunit).toFixed(5); //dose_mg_unit_raw 은 dose_mg를 penunit(0.2)단위로 나눈 값 (modify 되지 않은 이론상의)
+
+
+
+
+
+
+        if(updown==1){
+          weekdose_unit = Math.ceil(weekdose_unit_raw);
+        }else
+        {
+          weekdose_unit = Math.floor(weekdose_unit_raw);
+        }
+
+        weekdose_mg_mod = (weekdose_unit * penunit).toFixed(2);
+
+
+
+
+        for(var i=0; i <= weeklycount ;i++){
+
+          if(weekdose_mg_mod == (dose_mg_max*(weeklycount-i)+dose_mg_min*i).toFixed(2) ){
+            dose_max_count = weeklycount-i;
+            dose_min_count = i;
+            break;
+          }
+        }
+
+        dose_mg_max = dose_mg_max.toFixed(2);
+        dose_mg_min = dose_mg_min.toFixed(2);
+        var str ="";
+        var str2 ="";
+
+
+
+        if (dose_min_count>0&&dose_max_count>0){
+          str = "주간 전체 "+$("#weeklycount").val()+" 회 중 <strong >"+dose_mg_max+"mg "+dose_max_count+"회, "+dose_mg_min+"mg "+dose_min_count+"회</strong> 가이드";
+
+        }else if(dose_min_count==0&&dose_max_count>0){
+          str = "주간 전체 "+$("#weeklycount").val()+" 회 중 <strong >"+dose_mg_max+"mg "+(dose_max_count+dose_min_count)+"회</strong> 가이드";
+
+        }else {
+          str = "주간 전체 "+$("#weeklycount").val()+" 회 중 <strong >"+dose_mg_min+"mg "+(dose_max_count+dose_min_count)+"회</strong> 가이드";
+        }
+
+        str2 = "주간 처방 총 용량   : " + weekdose_mg.toFixed(3)+"<var>mg</var></br> "+
+               "주간 실투약 총 용량 : " + weekdose_mg_mod+"<var>mg</var> ";
+
+        $("#guide1").empty();
+        $("#guide1").append(str+"</br>");
+
+        $("#guide2").empty();
+        $("#guide2").append(str2);
+        $("#hid").focus();
+
+      })
+
+
+
+      //캡쳐 관련 함수
+      $(function(){
+        $("#shot").on("click", function(){
+        // 캡쳐 라이브러리를 통해서 canvas 오브젝트를 받고 이미지 파일로 리턴한다.
+        html2canvas(document.querySelector("body")).then(canvas => {
+        saveAs(canvas.toDataURL('image/png'),"capture-test.png");
+        });
+        });
+        function saveAs(uri, filename) {
+        // 캡쳐된 파일을 이미지 파일로 내보낸다.
+        var link = document.createElement('a');
+        if (typeof link.download === 'string') {
+        link.href = uri;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        } else {
+        window.open(uri);
+        }
+        }
+      });
+
+    </script>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
+</html>
